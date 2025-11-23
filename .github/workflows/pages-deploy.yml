@@ -20,17 +20,15 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies (none needed)
-        run: echo "No npm deps"
-
       - name: Generate photos.json
         run: node generate_manifest.js
 
       - name: Configure pages
         uses: actions/configure-pages@v4
 
+      # Use v2 of upload-pages-artifact which does not rely on the deprecated upload-artifact:v3
       - name: Upload site
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v2
         with:
           path: '.'
 
