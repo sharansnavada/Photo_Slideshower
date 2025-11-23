@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>God Photo Gallery</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>God Photo Gallery</h1>
+      <p>I love this god soooo much — daily photos (morning & evening)</p>
+      <div class="controls">
+        <button id="randomBtn">Show Random Photo (5s)</button>
+        <button id="pauseBtn">Pause</button>
+      </div>
+    </header>
+
+    <section id="hero" class="hero">
+      <img id="heroImg" src="" alt="Random photo" />
+    </section>
+
+    <section id="gallery" class="gallery">
+      <h2>All Photos</h2>
+      <div id="grid" class="grid"></div>
+    </section>
+
+    <footer>
+      <p>© <span id="year"></span></p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
