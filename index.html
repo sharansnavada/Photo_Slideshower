@@ -15,6 +15,7 @@
       --text-secondary: #a0a0b0;
       --border: rgba(255, 255, 255, 0.08);
       --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --sidebar-width: 240px;
     }
 
     * {
@@ -50,16 +51,123 @@
       50% { opacity: 0.6; }
     }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 24px;
+    /* Layout */
+    .layout {
+      display: flex;
+      min-height: 100vh;
     }
 
+    /* Sidebar */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--bg-card);
+      border-right: 1px solid var(--border);
+      padding: 20px;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+      z-index: 100;
+    }
+
+    .sidebar.hidden {
+      transform: translateX(-100%);
+    }
+
+    .menu-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 101;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 12px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .menu-toggle:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent);
+    }
+
+    .sidebar-header {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-header h3 {
+      font-size: 1.1rem;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .nav-item {
+      padding: 12px 16px;
+      margin: 8px 0;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    .random-control {
+      margin-top: 16px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .random-control label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .random-control input {
+      width: 100%;
+      padding: 8px;
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 1rem;
+    }
+
+    /* Main content */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 24px;
+      transition: margin-left 0.3s ease;
+    }
+
+    .main-content.expanded {
+      margin-left: 0;
+    }
+
+    /* Header */
     header {
       text-align: center;
       padding: 40px 20px 32px;
-      position: relative;
+      max-width: 1400px;
+      margin: 0 auto;
     }
 
     h1 {
@@ -71,122 +179,94 @@
       background-clip: text;
       margin-bottom: 12px;
       letter-spacing: -0.5px;
-      text-shadow: 0 0 40px var(--accent-glow);
+    }
+
+    .subtitle {
+      color: var(--accent);
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+      font-weight: 500;
     }
 
     header p {
       color: var(--text-secondary);
-      font-size: 1.1rem;
-      margin-bottom: 24px;
+      font-size: 1rem;
       font-weight: 300;
     }
 
-    .controls {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    button {
-      padding: 12px 28px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--bg-card);
-      color: var(--text-primary);
-      cursor: pointer;
-      font-size: 1rem;
-      font-weight: 500;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    button::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: var(--accent-glow);
-      transform: translate(-50%, -50%);
-      transition: width 0.6s, height 0.6s;
-    }
-
-    button:hover::before {
-      width: 300px;
-      height: 300px;
-    }
-
-    button:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px var(--accent-glow);
-    }
-
-    button:active {
-      transform: translateY(0);
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    button span {
-      position: relative;
-      z-index: 1;
-    }
-
-    #randomBtn {
-      background: linear-gradient(135deg, var(--accent) 0%, #f7931e 100%);
-      border: none;
-      color: white;
-      font-weight: 600;
-    }
-
-    #randomBtn:hover {
-      box-shadow: 0 8px 32px var(--accent-glow);
-    }
-
-    .hero {
-      margin: 32px 0;
+    /* Carousel section */
+    .carousel-section {
+      max-width: 1400px;
+      margin: 32px auto;
       background: var(--bg-card);
       padding: 24px;
       border-radius: 24px;
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
-      transition: all 0.3s ease;
       position: relative;
-      overflow: hidden;
     }
 
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--accent), #f7931e, #ffd700);
-      opacity: 0;
+    .carousel-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+    }
+
+    .carousel-nav {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .carousel-nav:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      transform: scale(1.1);
+    }
+
+    .carousel-main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 60vh;
+    }
+
+    .carousel-main img {
+      max-width: 100%;
+      max-height: 60vh;
+      object-fit: contain;
+      border-radius: 16px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .carousel-side {
+      width: 180px;
+      height: 240px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.6;
       transition: opacity 0.3s ease;
     }
 
-    .hero:hover::before {
-      opacity: 1;
-    }
-
-    .hero img {
-      width: 100%;
-      max-height: 70vh;
+    .carousel-side img {
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
-      border-radius: 16px;
-      display: block;
-      animation: fadeIn 0.5s ease;
+      border-radius: 12px;
+      filter: brightness(0.7);
     }
 
     @keyframes fadeIn {
@@ -200,8 +280,11 @@
       }
     }
 
+    /* Gallery grid */
     .gallery {
-      margin-top: 48px;
+      max-width: 1400px;
+      margin: 48px auto;
+      padding: 0 24px;
     }
 
     .gallery h2 {
@@ -241,7 +324,6 @@
       cursor: pointer;
       border: 2px solid var(--border);
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
     }
 
     .grid img:hover {
@@ -251,56 +333,60 @@
       z-index: 10;
     }
 
+    /* Footer */
     footer {
-      margin-top: 64px;
-      padding: 32px 0;
+      max-width: 1400px;
+      margin: 64px auto 0;
+      padding: 32px 24px;
       text-align: center;
       color: var(--text-secondary);
       border-top: 1px solid var(--border);
     }
 
-    footer p {
-      font-size: 0.95rem;
-    }
-
-    /* Loading state */
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: var(--text-secondary);
-    }
-
-    .loading::after {
-      content: '...';
-      animation: dots 1.5s steps(3, end) infinite;
-    }
-
-    @keyframes dots {
-      0%, 20% { content: '.'; }
-      40% { content: '..'; }
-      60%, 100% { content: '...'; }
-    }
-
     /* Responsive */
+    @media (max-width: 1024px) {
+      .carousel-side {
+        display: none;
+      }
+    }
+
     @media (max-width: 768px) {
-      .container {
-        padding: 16px;
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.visible {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
       }
 
       header {
-        padding: 24px 16px;
+        padding: 80px 16px 24px;
       }
 
       h1 {
         font-size: 2rem;
       }
 
-      .hero {
+      .carousel-section {
         padding: 16px;
       }
 
-      .hero img {
-        max-height: 50vh;
+      .carousel-main {
+        min-height: 40vh;
+      }
+
+      .carousel-main img {
+        max-height: 40vh;
+      }
+
+      .carousel-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
       }
 
       .grid {
@@ -311,14 +397,16 @@
       .grid img {
         height: 140px;
       }
-
-      button {
-        padding: 10px 20px;
-        font-size: 0.95rem;
-      }
     }
 
-    /* Scrollbar styling */
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-secondary);
+    }
+
+    /* Scrollbar */
     ::-webkit-scrollbar {
       width: 10px;
     }
@@ -338,103 +426,228 @@
   </style>
 </head>
 <body>
-  <main class="container">
-    <header>
-      <h1>Kateel Shree Durgaparameshwari</h1>
-      <p>Divine blessings captured daily — morning & evening darshan</p>
-      <div class="controls">
-        <button id="randomBtn"><span>✨ Random Photo (5s)</span></button>
-        <button id="pauseBtn"><span>⏸ Pause</span></button>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h3>☰ Menu</h3>
       </div>
-    </header>
+      
+      <nav>
+        <div class="nav-item active" data-view="home">
+          🏠 Home
+        </div>
+        <div class="nav-item" data-view="gallery">
+          🖼️ All Photos
+        </div>
+      </nav>
 
-    <section id="hero" class="hero">
-      <img id="heroImg" src="" alt="Divine photo" />
-    </section>
+      <div class="random-control">
+        <label for="intervalInput">Random Slideshow (seconds):</label>
+        <input type="number" id="intervalInput" value="3" min="1" max="60" />
+      </div>
+    </aside>
 
-    <section id="gallery" class="gallery">
-      <h2>All Photos</h2>
-      <div id="grid" class="grid"></div>
-    </section>
+    <button class="menu-toggle" id="menuToggle">☰</button>
 
-    <footer>
-      <p>🙏 Jai Mata Di • © <span id="year"></span></p>
-    </footer>
-  </main>
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+      <header>
+        <h1>Kateel Shree Durgaparameshwari Devi</h1>
+        <p class="subtitle">Namaste Bhramarambike namaste Durgeparame namah</p>
+        <p>Namaste nandanite kalliashrita digambare<br>
+        Arunana Sannuti beteranna varadayini</p>
+      </header>
+
+      <!-- Home View: Carousel Only -->
+      <section id="homeView" class="view">
+        <div class="carousel-section">
+          <div class="carousel-container">
+            <button class="carousel-nav" id="prevBtn">‹</button>
+            
+            <div class="carousel-side" id="prevPhoto">
+              <img src="" alt="Previous photo" />
+            </div>
+            
+            <div class="carousel-main">
+              <img id="mainPhoto" src="" alt="Main photo" />
+            </div>
+            
+            <div class="carousel-side" id="nextPhoto">
+              <img src="" alt="Next photo" />
+            </div>
+            
+            <button class="carousel-nav" id="nextBtn">›</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gallery View: All Photos Grid -->
+      <section id="galleryView" class="view" style="display: none;">
+        <div class="gallery">
+          <h2>All Photos</h2>
+          <div id="grid" class="grid"></div>
+        </div>
+      </section>
+
+      <footer>
+        <p>🙏 Jai Bhramarambite ! Jai Kateel Devi ! • © <span id="year"></span></p>
+      </footer>
+    </main>
+  </div>
 
   <script>
     const PHOTOS_JSON = './photos.json';
     let photos = [];
+    let currentIndex = 0;
     let randomInterval = null;
-    let randomMode = false;
-    let currentRandomIndex = -1;
+    let intervalSeconds = 3;
 
-    const heroImg = document.getElementById('heroImg');
+    const sidebar = document.getElementById('sidebar');
+    const menuToggle = document.getElementById('menuToggle');
+    const mainContent = document.getElementById('mainContent');
+    const mainPhoto = document.getElementById('mainPhoto');
+    const prevPhoto = document.getElementById('prevPhoto').querySelector('img');
+    const nextPhoto = document.getElementById('nextPhoto').querySelector('img');
     const grid = document.getElementById('grid');
-    const randomBtn = document.getElementById('randomBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
+    const intervalInput = document.getElementById('intervalInput');
+    const homeView = document.getElementById('homeView');
+    const galleryView = document.getElementById('galleryView');
+    const navItems = document.querySelectorAll('.nav-item');
 
-    async function loadPhotos(){
-      try{
+    // Menu toggle
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('visible');
+      if (window.innerWidth > 768) {
+        sidebar.classList.toggle('hidden');
+        mainContent.classList.toggle('expanded');
+      }
+    });
+
+    // Navigation
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const view = item.dataset.view;
+        navItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        
+        if (view === 'home') {
+          homeView.style.display = 'block';
+          galleryView.style.display = 'none';
+          startRandomSlideshow();
+        } else if (view === 'gallery') {
+          homeView.style.display = 'none';
+          galleryView.style.display = 'block';
+          stopRandomSlideshow();
+        }
+        
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('visible');
+        }
+      });
+    });
+
+    // Load photos
+    async function loadPhotos() {
+      try {
         const res = await fetch(PHOTOS_JSON + '?t=' + Date.now());
-        if(!res.ok) throw new Error('Could not load photos.json');
+        if (!res.ok) throw new Error('Could not load photos.json');
         photos = await res.json();
+        
+        if (photos.length === 0) {
+          grid.innerHTML = '<p class="loading">No photos found. Add photos to the photos/ folder.</p>';
+          return;
+        }
+        
+        currentIndex = photos.length - 1; // Start with latest photo
+        renderCarousel();
         renderGallery();
-        if(photos.length) showPhoto(photos[photos.length-1]);
-      }catch(e){
+        startRandomSlideshow();
+      } catch (e) {
         console.error(e);
-        grid.innerHTML = '<p class="loading" style="color:#ff6b35">Failed to load photos.json — make sure it exists in the repo root.</p>';
+        grid.innerHTML = '<p class="loading" style="color:#ff6b35">Failed to load photos.json</p>';
       }
     }
 
-    function renderGallery(){
+    // Render carousel
+    function renderCarousel() {
+      if (photos.length === 0) return;
+      
+      mainPhoto.src = photos[currentIndex];
+      
+      const prevIndex = (currentIndex - 1 + photos.length) % photos.length;
+      const nextIndex = (currentIndex + 1) % photos.length;
+      
+      prevPhoto.src = photos[prevIndex];
+      nextPhoto.src = photos[nextIndex];
+    }
+
+    // Render gallery
+    function renderGallery() {
       grid.innerHTML = '';
-      photos.forEach((p, i) =>{
+      photos.forEach((p, i) => {
         const img = document.createElement('img');
         img.src = p;
         img.alt = `divine-photo-${i}`;
         img.loading = 'lazy';
-        img.addEventListener('click', ()=>{
-          stopRandom();
-          showPhoto(p);
+        img.addEventListener('click', () => {
+          currentIndex = i;
+          // Switch to home view
+          homeView.style.display = 'block';
+          galleryView.style.display = 'none';
+          navItems[0].classList.add('active');
+          navItems[1].classList.remove('active');
+          renderCarousel();
+          startRandomSlideshow();
           window.scrollTo({ top: 0, behavior: 'smooth' });
         });
         grid.appendChild(img);
       });
     }
 
-    function showPhoto(path){
-      heroImg.src = path;
+    // Navigation buttons
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      stopRandomSlideshow();
+      currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+      renderCarousel();
+      startRandomSlideshow();
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      stopRandomSlideshow();
+      currentIndex = (currentIndex + 1) % photos.length;
+      renderCarousel();
+      startRandomSlideshow();
+    });
+
+    // Random slideshow
+    function startRandomSlideshow() {
+      stopRandomSlideshow();
+      if (photos.length === 0) return;
+      
+      intervalSeconds = parseInt(intervalInput.value) || 3;
+      
+      randomInterval = setInterval(() => {
+        currentIndex = (currentIndex + 1) % photos.length;
+        renderCarousel();
+      }, intervalSeconds * 1000);
     }
 
-    function startRandom(){
-      if(photos.length===0) return;
-      randomMode = true;
-      randomBtn.disabled = true;
-      pauseBtn.disabled = false;
-      currentRandomIndex = Math.floor(Math.random()*photos.length);
-      showPhoto(photos[currentRandomIndex]);
-      randomInterval = setInterval(()=>{
-        let next = Math.floor(Math.random()*photos.length);
-        if(photos.length>1){
-          while(next===currentRandomIndex) next = Math.floor(Math.random()*photos.length);
-        }
-        currentRandomIndex = next;
-        showPhoto(photos[currentRandomIndex]);
-      },5000);
+    function stopRandomSlideshow() {
+      if (randomInterval) {
+        clearInterval(randomInterval);
+        randomInterval = null;
+      }
     }
 
-    function stopRandom(){
-      randomMode = false;
-      randomBtn.disabled = false;
-      pauseBtn.disabled = true;
-      if(randomInterval) { clearInterval(randomInterval); randomInterval = null; }
-    }
+    // Interval input change
+    intervalInput.addEventListener('change', () => {
+      if (homeView.style.display !== 'none') {
+        startRandomSlideshow();
+      }
+    });
 
-    randomBtn.addEventListener('click', startRandom);
-    pauseBtn.addEventListener('click', stopRandom);
-
-    pauseBtn.disabled = true;
+    // Initialize
     document.getElementById('year').textContent = new Date().getFullYear();
     loadPhotos();
   </script>
