@@ -361,32 +361,18 @@
 
     /* Photo date display */
     .photo-date {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg, rgba(255, 107, 53, 0.95) 0%, rgba(247, 147, 30, 0.95) 100%);
-      padding: 12px 32px;
-      border-radius: 50px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: white;
-      box-shadow: 0 8px 32px rgba(255, 107, 53, 0.4);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+      margin-top: 16px;
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: var(--text-secondary);
       opacity: 0;
       transition: opacity 0.3s ease;
-      z-index: 10;
       letter-spacing: 0.5px;
     }
 
     .photo-date.visible {
       opacity: 1;
-    }
-
-    .photo-date::before {
-      content: '📅';
-      margin-right: 8px;
     }
 
     /* Gallery grid */
@@ -527,9 +513,8 @@
       }
 
       .photo-date {
-        bottom: 10px;
-        padding: 10px 24px;
-        font-size: 0.95rem;
+        margin-top: 12px;
+        font-size: 1rem;
       }
     }
 
@@ -617,8 +602,8 @@
             
             <button class="carousel-nav" id="nextBtn">›</button>
           </div>
-          <div class="photo-date" id="photoDate"></div>
         </div>
+        <div class="photo-date" id="photoDate"></div>
       </section>
 
       <!-- Gallery View: All Photos Grid -->
@@ -714,26 +699,23 @@
       try {
         const res = await fetch(PHOTOS_JSON + '?t=' + Date.now());
         if (!res.ok) throw new Error('Could not load photos.json');
-        photos = await res.json();
+        const data = await res.json();
         
-        if (photos.length === 0) {
+        // Check if data is array of strings or array of objects with metadata
+        if (data.length === 0) {
           grid.innerHTML = '<p class="loading">No photos found. Add photos to the photos/ folder.</p>';
           return;
         }
         
-        // Fetch file metadata to get actual upload dates
-        photoDates = await Promise.all(photos.map(async (photo) => {
-          try {
-            const photoRes = await fetch(photo, { method: 'HEAD' });
-            const lastModified = photoRes.headers.get('Last-Modified');
-            if (lastModified) {
-              return new Date(lastModified);
-            }
-          } catch (e) {
-            console.error('Could not fetch date for', photo);
-          }
-          return null;
-        }));
+        if (typeof data[0] === 'string') {
+          // Old format: just paths
+          photos = data;
+          photoDates = new Array(photos.length).fill(null);
+        } else {
+          // New format with metadata: {path, mtime}
+          photos = data.map(item => item.path || item);
+          photoDates = data.map(item => item.mtime ? new Date(item.mtime) : null);
+        }
         
         currentIndex = photos.length - 1; // Start with latest photo
         renderCarousel();
