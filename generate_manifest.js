@@ -16,7 +16,7 @@ function main(){
     .filter(f => /\.(jpe?g|png|gif|webp|avif)$/i.test(f))
     .map(f => ({name: f, mtime: fs.statSync(path.join(PHOTOS_DIR,f)).mtime.getTime()}))
     .sort((a,b)=>a.mtime - b.mtime)
-    .map(x => `./photos/${x.name}`);
+    .map(x => ({path: `./photos/${x.name}`, mtime: x.mtime}));
 
   fs.writeFileSync(OUT, JSON.stringify(files, null, 2), 'utf8');
   console.log('Wrote', OUT, 'with', files.length, 'photos');
